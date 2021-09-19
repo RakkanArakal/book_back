@@ -25,4 +25,4 @@ public class KafkaPro {
             producer.close();
         } catch (KafkaException e) {
             producer.abortTransaction(); }
-        producer.close(); } }///
+        producer.close(); } }
