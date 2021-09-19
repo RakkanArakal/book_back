@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User banUser(User user){
         return userDao.saveUser(user);
-    }
+    }//
 
     @Override
     public User saveUser(User user) {
