@@ -1,0 +1,35 @@
+package com.learn.bookstore.controller;
+
+import com.learn.bookstore.service.OrderService;
+import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/home")
+public class OrderController {
+
+    @Autowired
+    OrderService orderService;
+
+    @PostMapping("addOrder")
+    public String addTotalOrder(@RequestBody JSONObject ordersJsonbject) {
+        return orderService.addOrder(ordersJsonbject);
+    }
+
+    @GetMapping("/getOrdersByUid")
+    public List<Map<String,Object>> getOrdersByUid(int id){
+        return orderService.getOrdersByUid(id);
+    }
+    @PostMapping("/getOrders")
+    public List<Map<String, Object>> searchOrders(
+            @RequestParam int id,
+            @RequestParam(required = true, defaultValue = "2020-01-01 00:00:00") String t1,
+            @RequestParam(required = true, defaultValue = "") String t2
+    ) {
+        return orderService.searchOrders(id, t1, t2);
+    }
+}
