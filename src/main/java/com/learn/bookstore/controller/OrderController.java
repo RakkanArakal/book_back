@@ -3,7 +3,9 @@ package com.learn.bookstore.controller;
 import com.learn.bookstore.service.OrderService;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,22 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    WebApplicationContext applicationContext;
+
+//    @PostMapping("addOrder")
+//    public String addTotalOrder(@RequestBody JSONObject ordersJsonbject) {
+//        return orderService.addOrder(ordersJsonbject);
+//    }
+
     @PostMapping("addOrder")
     public String addTotalOrder(@RequestBody JSONObject ordersJsonbject) {
-        return orderService.addOrder(ordersJsonbject);
+        System.out.print(ordersJsonbject);
+
+        JmsTemplate jmsTemplate = applicationContext.getBean(JmsTemplate.class);
+        jmsTemplate.convertAndSend("order", ordersJsonbject);
+
+        return "success";
     }
 
     @GetMapping("/getOrdersByUid")

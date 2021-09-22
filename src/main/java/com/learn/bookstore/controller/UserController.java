@@ -1,8 +1,11 @@
 package com.learn.bookstore.controller;
 
+import com.learn.bookstore.constant.Constant;
 import com.learn.bookstore.entity.Book;
 import com.learn.bookstore.entity.User;
 import com.learn.bookstore.service.UserService;
+import com.learn.bookstore.utils.sessionutils.SessionUtil;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +22,19 @@ public class UserController {
 
     @GetMapping("/Login")
     public User login(String userName, String password){
-        System.out.println(userService);
-        System.out.println(this);
-        return userService.getUser(userName,password);
+        User auth = userService.getUser(userName,password);
+        if(auth != null){
+
+            JSONObject obj = new JSONObject();
+            obj.put(Constant.USER_ID, auth.getId());
+            obj.put(Constant.USERNAME, auth.getAccount());
+//            obj.put(Constant.USER_TYPE, auth.getUserType());
+            SessionUtil.setSession(obj);
+
+            JSONObject data = JSONObject.fromObject(auth);
+            data.remove(Constant.PASSWORD);
+        }
+        return auth;
     }
 
     @GetMapping("/getuser")
