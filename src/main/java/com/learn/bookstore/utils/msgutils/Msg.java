@@ -1,5 +1,7 @@
 package com.learn.bookstore.utils.msgutils;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.sf.json.JSONObject;
 
 /**
@@ -8,6 +10,8 @@ import net.sf.json.JSONObject;
  * @Author thunderBoy
  * @Date 2019/11/7 14:36
  */
+@Getter
+@Setter
 public class Msg {
     private int status;
     private String msg;
@@ -48,34 +52,5 @@ public class Msg {
         this.msg = extra;
         this.data = null;
     }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public JSONObject getData() {
-        return data;
-    }
-
-    public void setData(JSONObject data) {
-        this.data = data;
-    }
-
-
-
-
-
 
 }
