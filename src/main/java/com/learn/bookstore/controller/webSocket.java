@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 @Slf4j
-@ServerEndpoint(value = "/chatRoom/{userName}",configurator = WebSocketConfig.class)
+@ServerEndpoint(value = "/chatRoom/{userName}")
 @RestController
 public class webSocket {
 
@@ -27,11 +29,19 @@ public class webSocket {
     @OnOpen
     public void onOpen(Session session, @PathParam("userName") String userName) {
 
-        broadcast("join",userName);
         clients.put(session.getId(),session);
+        broadcast("join",userName);
         onlineUser.put(session.getId(),userName);
         log.info("有新连接加入：{}，当前在线人数为：{},在线用户有{}", session.getId(), onlineCount.incrementAndGet(),onlineUser);
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type","onlineUser");
+        List<String> list = onlineUser.values().stream().collect(Collectors.toList());
+        jsonObject.put("userName",list);
+
+        for(Map.Entry<String,Session> client:clients.entrySet()){
+            sendMessageBack(jsonObject,client.getValue());
+        }
     }
 
 
@@ -78,6 +88,10 @@ public class webSocket {
 
     private void broadcast(String type, String msg) {
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type",type);
+        jsonObject.put("userName",msg);
+
         switch (type){
             case "join" : {
                 msg += "加入了聊天室";
@@ -88,8 +102,10 @@ public class webSocket {
             default:
                 break;
         }
+        jsonObject.put("msg",msg);
+
         for(Map.Entry<String,Session> client:clients.entrySet()){
-            sendMessageBack(msg,client.getValue());
+            sendMessageBack(jsonObject,client.getValue());
         }
     }
 
@@ -102,14 +118,14 @@ public class webSocket {
     /**
      * 服务端单独返回消息消息给请求的客户端
      */
-//    private void sendMessageBack(JSONObject message, Session toSession) {
-//        try {
-//            toSession.getBasicRemote().sendText(message.toString());
-//            log.info("服务端给客户端[{}]发送消息:{}", toSession.getId(), message.toString());
-//        } catch (Exception e) {
-//            log.error("服务端发送消息给客户端失败：", e);
-//        }
-//    }
+    private void sendMessageBack(JSONObject message, Session toSession) {
+        try {
+            toSession.getBasicRemote().sendText(message.toString());
+            log.info("服务端给客户端[{}]发送消息:{}", toSession.getId(), message.toString());
+        } catch (Exception e) {
+            log.error("服务端发送消息给客户端失败：", e);
+        }
+    }
 
     private void sendMessageBack(String message, Session toSession) {
         try {
