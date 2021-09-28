@@ -27,11 +27,10 @@ public class webSocket {
     @OnOpen
     public void onOpen(Session session, @PathParam("userName") String userName) {
 
-        int cnt = onlineCount.incrementAndGet();
+        broadcast("join",userName);
         clients.put(session.getId(),session);
         onlineUser.put(session.getId(),userName);
-        broadcast("join",userName);
-        log.info("有新连接加入：{}，当前在线人数为：{},在线用户有{}", session.getId(), cnt,onlineUser);
+        log.info("有新连接加入：{}，当前在线人数为：{},在线用户有{}", session.getId(), onlineCount.incrementAndGet(),onlineUser);
 
     }
 
@@ -39,11 +38,10 @@ public class webSocket {
     @OnClose
     public void onClose(Session session) {
 
-        int cnt = onlineCount.decrementAndGet();
         clients.remove(session.getId());
+        broadcast("leave",onlineUser.get(session.getId()));
         onlineUser.remove(session.getId());
-
-        log.info("有一连接关闭：{}，当前在线人数为：{}", session.getId(), cnt);
+        log.info("有新连接加入：{}，当前在线人数为：{},在线用户有{}", session.getId(), onlineCount.incrementAndGet(),onlineUser);
     }
 
 
@@ -78,7 +76,7 @@ public class webSocket {
         }
     }
 
-    private void broadcast(String type, String msg ) {
+    private void broadcast(String type, String msg) {
 
         switch (type){
             case "join" : {
@@ -104,14 +102,14 @@ public class webSocket {
     /**
      * 服务端单独返回消息消息给请求的客户端
      */
-    private void sendMessageBack(JSONObject message, Session toSession) {
-        try {
-            toSession.getBasicRemote().sendText(message.toString());
-            log.info("服务端给客户端[{}]发送消息:{}", toSession.getId(), message.toString());
-        } catch (Exception e) {
-            log.error("服务端发送消息给客户端失败：", e);
-        }
-    }
+//    private void sendMessageBack(JSONObject message, Session toSession) {
+//        try {
+//            toSession.getBasicRemote().sendText(message.toString());
+//            log.info("服务端给客户端[{}]发送消息:{}", toSession.getId(), message.toString());
+//        } catch (Exception e) {
+//            log.error("服务端发送消息给客户端失败：", e);
+//        }
+//    }
 
     private void sendMessageBack(String message, Session toSession) {
         try {
