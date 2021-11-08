@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "`order`")
-public class Order {
+public class Order   {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

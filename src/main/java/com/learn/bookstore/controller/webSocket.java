@@ -36,7 +36,7 @@ public class webSocket {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type","onlineUser");
-        List<String> list = onlineUser.values().stream().collect(Collectors.toList());
+        List<Object> list = onlineUser.values().stream().collect(Collectors.toList());
         jsonObject.put("userName",list);
 
         for(Map.Entry<String,Session> client:clients.entrySet()){

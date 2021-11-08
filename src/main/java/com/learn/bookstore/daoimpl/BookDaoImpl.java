@@ -4,6 +4,8 @@ package com.learn.bookstore.daoimpl;
 import com.learn.bookstore.dao.BookDao;
 import com.learn.bookstore.entity.Book;
 import com.learn.bookstore.responsitory.BookRepository;
+import com.learn.bookstore.utils.RedisUtil;
+import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,27 +25,48 @@ public class BookDaoImpl implements BookDao {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    RedisUtil redisUtil;
+
     @Override
     public List<Book> getAllBooks() {
 
-        return bookRepository.findAll();
+        List<Book> books = bookRepository.findAll();
+        List<Object> b = redisUtil.lGet("book",0,-1);
+//        books = (List<Book>) JSONArray.parseObject(b.toString(), Book.class);
+        return books;
     }
 
     @Override
     public Book getBookById(int id) {
 
-        return bookRepository.findById(id).orElse(null);
+        Book book = null;
+        System.out.println("Searching Book: " + id + " in Redis");
+
+        Object b = redisUtil.get("book" + id);
+        if (b == null) {
+            System.out.println("Book: " + id + " is not in Redis");
+            System.out.println("Searching Book: " + id + " in DB");
+            book = bookRepository.findById(id).orElse(null);
+            redisUtil.set("book" + id, JSONArray.toJSON(book));
+        } else {
+            book = JSONArray.parseObject(b.toString(), Book.class);
+            System.out.println("book: " + id + " is in Redis");
+        }
+        return book;
     }
 
     @Override
     public Book saveBook(Book book) {
 
+        redisUtil.set("book" + book.getId(), JSONArray.toJSON(book));
         return bookRepository.save(book);
     }
 
     @Override
     public boolean deleteBook(int id) {
         try {
+            redisUtil.del("book" + id);
             bookRepository.deleteById(id);
         }catch (Exception e){
             return false;
@@ -53,7 +76,9 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Page<Book> findAll(Pageable pageable) {
+
         return bookRepository.findAll(pageable);
+
     }
 
 
