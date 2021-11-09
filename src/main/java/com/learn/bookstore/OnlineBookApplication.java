@@ -20,31 +20,31 @@ public class OnlineBookApplication {
         SpringApplication.run(OnlineBookApplication.class, args);
     }
 
-//    @Bean
-//    public TomcatServletWebServerFactory servletContainer() { //springboot2 新变化
-//        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
-//            @Override
-//            protected void postProcessContext(Context context) {
-//
-//                SecurityConstraint securityConstraint = new SecurityConstraint();
-//                securityConstraint.setUserConstraint("CONFIDENTIAL");
-//                SecurityCollection collection = new SecurityCollection();
-//                collection.addPattern("/*");
-//                securityConstraint.addCollection(collection);
-//                context.addConstraint(securityConstraint);
-//            }
-//        };
-//        tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
-//        return tomcat;
-//    }
-//
-//    private Connector initiateHttpConnector() {
-//        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-//        connector.setScheme("http");
-//        connector.setPort(8889);
-//        connector.setSecure(false);
-//        connector.setRedirectPort(8888);
-//        return connector;
-//    }
+    @Bean
+    public TomcatServletWebServerFactory servletContainer() { //springboot2 新变化
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
+            @Override
+            protected void postProcessContext(Context context) {
+
+                SecurityConstraint securityConstraint = new SecurityConstraint();
+                securityConstraint.setUserConstraint("CONFIDENTIAL");
+                SecurityCollection collection = new SecurityCollection();
+                collection.addPattern("/*");
+                securityConstraint.addCollection(collection);
+                context.addConstraint(securityConstraint);
+            }
+        };
+        tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
+        return tomcat;
+    }
+
+    private Connector initiateHttpConnector() {
+        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        connector.setScheme("http");
+        connector.setPort(8889);
+        connector.setSecure(false);
+        connector.setRedirectPort(8888);
+        return connector;
+    }
 
 }
