@@ -24,7 +24,9 @@ public class Book implements Serializable {
     private String  isbn;
     private Float  price;
     private String  img;
-    private String  intro;
     private Integer stock;
+    @Transient
+    private String  intro;
+
 
 }
