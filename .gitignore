@@ -18,6 +18,11 @@ target/
 *.iws
 *.iml
 *.ipr
+*.fdt
+*.fdx
+*.fnm
+*.nvd
+
 
 ### NetBeans ###
 /nbproject/private/
@@ -31,3 +36,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/lucene/
+/lucene/indexLibrary/
