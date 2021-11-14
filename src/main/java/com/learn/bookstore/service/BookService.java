@@ -4,7 +4,7 @@ import com.learn.bookstore.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.servlet.jsp.tagext.PageData;
+
 import java.util.List;
 
 public interface BookService {
@@ -18,4 +18,6 @@ public interface BookService {
 
     Page<Book> findAll(Pageable pageable);
     Book editBook(Book book);
+
+    List<Book> labelSearch(String nodeName);
 }

@@ -16,7 +16,9 @@ public class BookIntro implements Serializable {
     @Id
     private Integer id;
 
-    private String  intro;
+    private String intro;
+
+    private String bookLabel;
 
     public BookIntro(int id,String intro){
         this.id = id;

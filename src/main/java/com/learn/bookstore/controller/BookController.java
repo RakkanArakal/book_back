@@ -35,6 +35,7 @@ public class BookController {
 
     @PostMapping("/Book")
     public String save(@RequestBody Book book){
+
         return bookService.saveBook(book);
     }
 
@@ -44,15 +45,25 @@ public class BookController {
     }
 
     @PutMapping("/Book")
-    public Book editBook(@RequestBody Book book){ return bookService.editBook(book); }
+    public Book editBook(@RequestBody Book book){
+        System.out.println("?"+book);
+        return bookService.editBook(book);
+    }
 
     @DeleteMapping("Book/{id}")
     public boolean deleteById(@PathVariable int id){ return bookService.deleteBookById(id); }
 
-    @PostMapping("/searchBooks")
+    @PostMapping("/fullTextSearch")
     public List<Book> fullTextSearch(@RequestBody String key) throws UnsupportedEncodingException {
         String nodeName= URLDecoder.decode(key, "utf-8");
         System.out.print(nodeName);
         return bookService.fullTextSearch(nodeName);
     }
+    @PostMapping("/labelSearch")
+    public List<Book> labelSearch(@RequestBody String key) throws UnsupportedEncodingException {
+        String nodeName= URLDecoder.decode(key, "utf-8");
+        System.out.print(nodeName);
+        return bookService.labelSearch(nodeName);
+    }
+
 }

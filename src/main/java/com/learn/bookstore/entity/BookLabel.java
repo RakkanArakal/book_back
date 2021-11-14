@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Node
@@ -16,7 +17,7 @@ public class BookLabel {
 
     private String name;
 
-    private BookLabel(String name){
+    public BookLabel(String name){
         this.name = name;
     }
 
@@ -37,6 +38,10 @@ public class BookLabel {
     public void setName(String name) {
         this.name = name;
     }
+    private List<Integer> bookList;
 
+    public List<Integer> getBookList(){return bookList;}
+
+    public void setBookList(List<Integer> bookList) {this.bookList = bookList; }
 }
 

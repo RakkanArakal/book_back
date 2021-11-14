@@ -14,4 +14,6 @@ public interface BookDao {
     boolean deleteBook(int id);
 
     Page<Book> findAll(Pageable pageable);
+
+    List<Book> labelSearch(String keyWord);
 }

@@ -55,6 +55,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<Book> labelSearch(String keyWord) {
+        return bookDao.labelSearch(keyWord);
+    }
+    @Override
     public Page<Book> findAll(Pageable pageable) {
         return bookDao.findAll(pageable);
     }

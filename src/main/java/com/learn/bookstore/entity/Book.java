@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 
 @Entity
@@ -27,6 +28,8 @@ public class Book implements Serializable {
     private Integer stock;
     @Transient
     private String  intro;
+    @Transient
+    private String bookLabel;
 
 
 }
