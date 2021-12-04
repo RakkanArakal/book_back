@@ -66,9 +66,12 @@ public class BookDaoImpl implements BookDao {
             book = bookRepository.findById(id).orElse(null);
             BookIntro intro = bookIntroRepository.findById(id).orElse(null);
             book.setIntro(intro.getIntro());
+            book.setBookLabel(intro.getBookLabel());
             redisUtil.set("book" + id, JSONArray.toJSON(book));
         } else {
             book = JSONArray.parseObject(b.toString(), Book.class);
+            BookIntro intro = new BookIntro(book.getId(),book.getIntro());
+            bookIntroRepository.save(intro);
             System.out.println("book: " + id + " is in Redis");
         }
 
@@ -79,9 +82,10 @@ public class BookDaoImpl implements BookDao {
     public Book saveBook(Book book) {
         try {
             redisUtil.set("book" + book.getId(), JSONArray.toJSON(book));
-            book = bookRepository.save(book);
             BookIntro intro = new BookIntro(book.getId(),book.getIntro());
+            bookRepository.save(book);
             bookIntroRepository.save(intro);
+//            book.setIntro(intro.getIntro());
             return book;
         }catch (Exception e){
             return null;
@@ -120,7 +124,7 @@ public class BookDaoImpl implements BookDao {
 //        BookLabel jiaoyu = new BookLabel("教育");
 //        BookLabel jishu = new BookLabel("技术");
 //        BookLabel xiaoshuo = new BookLabel("小说");
-//        BookLabel rensheng = new BookLabel("人生哲理");
+//        BookLabel rensheng = new BookLabel("人生");
 //        BookLabel tuolaji = new BookLabel("拖拉机");
 //        BookLabel fupo = new BookLabel("富婆");
 //        BookLabel gaochan = new BookLabel("高产");
@@ -166,12 +170,15 @@ public class BookDaoImpl implements BookDao {
 //        bookLabelRepository.save(gaochan);
 
         keyWord = keyWord.substring(0, keyWord.length() - 1);
-        List<BookLabel> labelList = bookLabelRepository.findByNeighborsName(keyWord);
+
+
+
         List<Integer> bookInedx = new ArrayList<>(10);
         if(bookLabelRepository.findByName(keyWord)!= null){
             bookInedx = bookLabelRepository.findByName(keyWord).getBookList();
         }
 
+        List<BookLabel> labelList = bookLabelRepository.findByNeighborsName(keyWord);
         for(int i=0;i<labelList.size();i++){
             List<Integer> books = labelList.get(i).getBookList();
             for(int j=0;j<books.size();j++){
@@ -181,8 +188,8 @@ public class BookDaoImpl implements BookDao {
                 }
             }
         }
-        List<Book> searchList = new ArrayList<>(10);
 
+        List<Book> searchList = new ArrayList<>(10);
         for(int i=0;i<bookInedx.size();i++){
             Book book = bookRepository.findById(bookInedx.get(i)).orElse(null);
             book.setBookLabel(bookIntroRepository.findById(bookInedx.get(i)).orElse(null).getBookLabel());

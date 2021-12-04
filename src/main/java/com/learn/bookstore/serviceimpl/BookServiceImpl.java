@@ -37,7 +37,7 @@ import java.util.List;
 @Service
 public class BookServiceImpl implements BookService {
 
-    String path = "./lucene/indexLibrary";
+    String path = "/Java/lucene/indexLibrary";
 
     @Autowired
     private BookDao bookDao;
@@ -133,6 +133,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String saveBook(Book book) {
         Book result = bookDao.saveBook(book);
+        System.out.print(result.getIntro());
         if(result != null) {
             addOrUpIndex(result);
             return "success";

@@ -38,6 +38,7 @@ public class BookLabel {
     public void setName(String name) {
         this.name = name;
     }
+
     private List<Integer> bookList;
 
     public List<Integer> getBookList(){return bookList;}
