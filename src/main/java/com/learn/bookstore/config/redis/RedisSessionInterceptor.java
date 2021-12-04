@@ -29,21 +29,21 @@ public class RedisSessionInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
-        return true;
-//        if (username != null) {
-//            String loginSessionId = (String) redisUtil.get(String.format("username:%s", username));
-//
-//            if (loginSessionId != null && loginSessionId.equals(session.getId())) {
-//                // success
-//                return true;
-//            } else if (loginSessionId != null && !loginSessionId.equals(session.getId())) {
-//                log.info("id mismatch, session invalidate: {}", session.getId());
-//            }
-//        } else {
-//            log.info("please login");
-//        }
-//        response401(response);
-//        return false;
+//        return true;
+        if (username != null) {
+            String loginSessionId = (String) redisUtil.get(String.format("username:%s", username));
+
+            if (loginSessionId != null && loginSessionId.equals(session.getId())) {
+                // success
+                return true;
+            } else if (loginSessionId != null && !loginSessionId.equals(session.getId())) {
+                log.info("id mismatch, session invalidate: {}", session.getId());
+            }
+        } else {
+            log.info("please login");
+        }
+        response401(response);
+        return false;
     }
 
     private void response401(HttpServletResponse response) throws Exception {
