@@ -23,6 +23,7 @@ target/
 *.fnm
 *.nvd
 
+pom.xml
 
 ### NetBeans ###
 /nbproject/private/
